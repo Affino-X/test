@@ -2,10 +2,9 @@ const logo = document.getElementById("logo");
 const loaderContainer = document.getElementById("loader-container");
 
 // Рассчитываем время загрузки страницы
-const pageLoadTime = Math.max(
-  performance.now() - performance.timing.navigationStart,
-  0
-);
+const pageLoadTime =
+  performance.timing.domContentLoadedEventEnd -
+  performance.timing.navigationStart;
 const animationDuration = Math.min(Math.max(pageLoadTime / 1000, 1), 5); // Ограничиваем от 1 до 5 секунд
 
 // Адаптивные настройки анимации
@@ -21,7 +20,7 @@ const initAnimation = gsap.timeline({
       gsap.to(loaderContainer, {
         opacity: 0,
         scale: 1 + Math.log(animationDuration + 1), // Плавное увеличение scale с использованием логарифма
-        duration: 3,
+        duration: 8,
         ease: "power3.inOut",
         onComplete: () => {
           loaderContainer.style.display = "none";
@@ -65,13 +64,4 @@ function startHeartbeatEffect() {
       duration: 0.3,
       ease: "power1.inOut",
     });
-
-  // Останавливаем анимацию через время, равное времени загрузки страницы
-  const pageLoadTime =
-    performance.timing.domContentLoadedEventEnd -
-    performance.timing.navigationStart;
-
-  setTimeout(() => {
-    heartbeatTimeline.kill();
-  }, pageLoadTime);
 }
