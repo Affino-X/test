@@ -56,4 +56,13 @@ function startHeartbeatEffect() {
       duration: 0.3,
       ease: "power1.inOut",
     });
+
+  // Останавливаем анимацию через время, равное времени загрузки страницы
+  const pageLoadTime =
+    performance.timing.domContentLoadedEventEnd -
+    performance.timing.navigationStart;
+
+  setTimeout(() => {
+    heartbeatTimeline.kill();
+  }, pageLoadTime);
 }
