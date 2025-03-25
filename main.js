@@ -2,9 +2,10 @@ const logo = document.getElementById("logo");
 const loaderContainer = document.getElementById("loader-container");
 
 // Рассчитываем время загрузки страницы
-const pageLoadTime =
-  performance.timing.domContentLoadedEventEnd -
-  performance.timing.navigationStart;
+const pageLoadTime = Math.max(
+  performance.now() - performance.timing.navigationStart,
+  0
+);
 const animationDuration = Math.min(Math.max(pageLoadTime / 1000, 1), 5); // Ограничиваем от 1 до 5 секунд
 
 // Адаптивные настройки анимации
@@ -15,16 +16,24 @@ const initAnimation = gsap.timeline({
   onComplete: () => {
     startHeartbeatEffect();
 
-    // Анимация исчезновения контейнера загрузки
-    gsap.to(loaderContainer, {
-      opacity: 0,
-      scale: 1 + Math.log(animationDuration + 1), // Плавное увеличение scale с использованием логарифма
-      duration: 3,
-      ease: "power3.inOut",
-      onComplete: () => {
-        loaderContainer.style.display = "none";
-      },
-    });
+    // Ждем окончания загрузки страницы перед началом анимации исчезновения контейнера загрузки
+    const startAnimation = () => {
+      gsap.to(loaderContainer, {
+        opacity: 0,
+        scale: 1 + Math.log(animationDuration + 1), // Плавное увеличение scale с использованием логарифма
+        duration: 3,
+        ease: "power3.inOut",
+        onComplete: () => {
+          loaderContainer.style.display = "none";
+        },
+      });
+    };
+
+    if (document.readyState === "complete") {
+      startAnimation();
+    } else {
+      window.addEventListener("load", startAnimation);
+    }
   },
 });
 
