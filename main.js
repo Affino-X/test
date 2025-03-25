@@ -41,7 +41,7 @@ initAnimation.from(logo, {
   opacity: 0,
   rotation: 10 * Math.sin(window.innerWidth / 500),
   duration: animationDuration,
-  ease: "elastic.out(0.8, 0.6)",
+  ease: "elastic.out(0.1, 0.4)",
   delay: 0.2,
 });
 
